@@ -1,28 +1,30 @@
-class FileWriter:
-    '''Helper class to write the results to a file'''
+import random
+from Virus import Virus
 
-    def __init__(self, filename):
-        self.results_file_name = filename
+class Person:
+    ''' The simulation will contain people who will make up a population.'''
 
-    def init_file(self, virus, population_size, initial_vaccinated, initial_healthy, initial_infected):
-        '''Write the simulation initilization information to the file'''
-        results_file = open(self.results_file_name, "w")
+    def __init__(self, is_vaccinated, infection=None):
+        ''' We start out with is_alive = True
+        All other values will be set by the simulation through the parameters when it instantiates each Person object.
+        '''
+        self.is_alive = True #boolean
+        self.is_vaccinated = is_vaccinated #boolean
+        self.infection = infection #virus object
+        
 
-        results_file.write(f"Simulation for virus: {virus.name}\n")
-        results_file.write(f"Reproduction Number: {virus.reproduction_num}, Mortality Number: {virus.mortality_num}\n")
-        results_file.write(f"Population Size: {population_size}\n")
-        results_file.write(f"Initial Vaccinated: {initial_vaccinated}\n")
-        results_file.write(f"Initial Healthy: {initial_healthy}\n")
-        results_file.write(f"Initial Infected: {initial_infected}\n")
-
-        results_file.close()
-    
-    def write_results(self, time_step_counter, total_dead, total_vaccinated):
-        '''Write the results of the simulation to the file'''
-        results_file = open(self.results_file_name, "a")
-
-        results_file.write(f"\nSimulation Ended after {time_step_counter} turns\n")
-        results_file.write(f"Total Dead: {total_dead}\n")
-        results_file.write(f"Total Vaccinated: {total_vaccinated}\n")
-
-        results_file.close()
+    def did_survive_infection(self):
+        ''' Generate a random number between 0.0 and 1.0 and compare to the virus's mortality_num.
+        If the random number is smaller, person dies from the disease. Set the person's is alive attribute to False
+        If Person survives, they become vaccinated and they have no infection (set the vaccinated attibute to True and the infection to None)
+        Return True if they survived the infection and False if they did not. 
+        '''
+        if self.infection != None:
+            random_number = random.randint(0.0, 1.0) 
+            if random_number < self.infection.mortality_num:
+                self.is_alive = False
+                return False
+            else:
+                self.is_vaccinated = True
+                self.infection = None
+                return True
